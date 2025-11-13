@@ -80,7 +80,7 @@ This may change over time as I learn about the language, but these seem to be so
 
 ### Tier 1 - Fundamentals
 
-1. Dynamic Vector
+#### 1. Dynamic Vector
 
 - A growable array, similar to `std::vector` in C++ or `Vec` in Rust:
   - Should resize dynamically
@@ -92,7 +92,7 @@ This may change over time as I learn about the language, but these seem to be so
   - [Implementing a vector-like data structure in C](https://www.youtube.com/watch?v=bQvxQbUzZZM)
   - [GeeksForGeeks - Dynamic Array in C](https://www.geeksforgeeks.org/c/dynamic-array-in-c/)
 
-2. String Builder
+#### 2. String Builder
 
 - A buffer that grows as I append text.
   - Useful for constructing strings without constant reallocations.
@@ -100,7 +100,7 @@ This may change over time as I learn about the language, but these seem to be so
   - [Strings in C - Jacob Sorber](https://www.youtube.com/watch?v=5TzFNouc0PE)
   - [why do hackers love strings? - Low Level](https://www.youtube.com/watch?v=fjMrDDj47E8)
 
-3. Arena Allocator
+#### 3. Arena Allocator
 
 - A simple allocator where a big chunk of memory is handed out in order.
 - Resources:
@@ -110,7 +110,7 @@ This may change over time as I learn about the language, but these seem to be so
 
 ### Tier 2 - Intermediate Structures
 
-4. Ring Buffer
+#### 4. Ring Buffer
 
 - A circular buffer used for fixed-size queues, audio processing, and IPC.
 - Resources:
@@ -120,7 +120,7 @@ This may change over time as I learn about the language, but these seem to be so
   - [Implementing a Circular Queue in C - Jacob Sorber](https://www.youtube.com/watch?v=oyX30WVuEos)
   - [Creating a Circular Buffer in C and C++ - Embedded Artistry](https://embeddedartistry.com/blog/2017/05/17/creating-a-circular-buffer-in-c-and-c/)
 
-5. Pool Allocator
+#### 5. Pool Allocator
 
 - Allocates fixed-size blocks from a pool. Useful for stable pointers.
 - Resources:
@@ -128,7 +128,7 @@ This may change over time as I learn about the language, but these seem to be so
   - [What is an object pool, and how to create one in C? - Jacob Sorber](https://www.youtube.com/watch?v=CpgsQLSc7KY)
   - [Writing a simple pool allocator in C - 8dcc](https://8dcc.github.io/programming/pool-allocator.html)
 
-6. Hash Table (Open Addressing)
+#### 6. Hash Table (Open Addressing)
 
 - A hash map storing key/value pairs with collision resolution.
   - [What is a HashTable Data Structure - Paul Programming](https://www.youtube.com/watch?v=MfhjkfocRR0)
@@ -140,13 +140,16 @@ This may change over time as I learn about the language, but these seem to be so
 
 For now these are rough ideas. Once I complete the projects above, I'll refresh this section with more details.
 
-7. Logger
+#### 7. Logger
+
 - Prints messages with levels (DEBUG, INFO, WARN, ERROR), optionally using colors.
 
-8. Job Queue (Task System)
+#### 8. Job Queue (Task System)
+
 - A simple FIFO queue of function pointers and associated data.
 
-9. Minimal Test Harness
+#### 9. Minimal Test Harness
+
 - A tiny custom testing framework.
 
 ## Theming / Presentation Layer
