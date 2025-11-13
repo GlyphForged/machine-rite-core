@@ -15,6 +15,7 @@
  *  - pushElement(&VectrumPtr, data)
  *  - popElement(&VectrumPtr)
  *  - randomAccess(&VectrumPtr, index)
+ *  - removeElement(&VectrumPtr, index)
  *  - clear(&VectrumPtr)
  * 
  * Stretch Goals:
@@ -22,7 +23,6 @@
  *  - Vectrum of pointers functionality for heterogeneous data
  * 
  * Plain English Explanation:
- * 
  * The Vectrum struct itself will include 4 key pieces of data: 
  *    - the current length of the vector
  *    - the maximum size of the vector
@@ -36,10 +36,10 @@
  *      - sets the length of the vector to 0
  *      - stores the address of the start of the allocated block of memory in the user-owned Vectrum struct
  * 
- * So the user of the vector library creates a new Vectrum struct, and then calls `init` on the struct,
- * passing in the data type and the desired initial capacity, along with a pointer to the Verctrum struct
+ * So the user of the vector library creates a new Vectrum object, and then calls `init` on the struct,
+ * passing in the data type and the desired initial capacity, along with a pointer to the Verctrum object
  * the user created. init calls malloc to get a chunk of data of the appropriate size, then uses the pointer
- * to update the Vectrum variable witht he appropriate information, namely: The capacity, the current length,
+ * to update the Vectrum object with the appropriate information, namely: The capacity, the current length,
  * the size of each item, and a pointer to the address of the allocated block of memory.
  *
  * Vectrum Contains:
