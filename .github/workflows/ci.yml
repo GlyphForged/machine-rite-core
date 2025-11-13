@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Install build tools
+          run: sudo apt-get update && sudo apt-get install -y build-essential
+
+        - name: Build
+          run: |
+            mkdir -p build
+            gcc -std=c11 -Wall -Wextra -Werror -Iinclude \
+            src/main.c \
+            -o build/mr_demo
+
+        - name: Run tests
+          run: |
+            # later: ./build/tests or similar
+            echo "No tests yet"
