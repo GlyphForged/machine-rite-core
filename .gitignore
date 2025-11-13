@@ -1,0 +1,28 @@
+# Build outputs
+/build/
+/bin/
+/obj/
+*.o
+*.out
+*.exe
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+# CMake / Make / Ninja (if used later)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.ninja
+.ninja_deps
+.ninja_log
+
+# Coverage / Testing tools
+*.gcno
+*.gcda
+*.gcov
+
+# Logs
+*.log
+
