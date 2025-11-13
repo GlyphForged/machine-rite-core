@@ -63,16 +63,6 @@ As I'm still learning, these should help keep me focused on what matters for sol
 - Keep helper functions private:
   - Internal helper functions should be static in the `.c` file so they don't leak into the global namespace.
 
-### Compilation
-
-Compile with the bash command below. Stretch goal: Build a MAKEFILE or a bash script to handle this dynamically.
-
-```bash
-gcc -std=c11 -Wall -Wextra -Werror -Iinclude \
-src/main.c \ # Add libraries as they are build
--o build/mr_demo
-```
-
 ## Planned Modules
 
 I've got a rough roadmap for what I'd like to implement. This will store resources I found and the general gameplan I've devised while researching C.
