@@ -152,6 +152,13 @@ For now these are rough ideas. Once I complete the projects above, I'll refresh 
 
 - A tiny custom testing framework.
 
+#### 10. Scope Guard / RAII utilities
+
+- A poor man's RAII
+  - Small header-only helpers for scope-based cleanup patterns.
+  - Macros to guarantee cleanup runs when leaving a function.
+  - Used by examples and tests to keep resource-handling code consistent and less error-prone.
+
 ## Theming / Presentation Layer
 
 The C modules themselves will be neutral, however, my goal is to build a system of CLI demos and/or a WASM showcase.
