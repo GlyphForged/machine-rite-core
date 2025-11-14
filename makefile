@@ -3,7 +3,7 @@ CFLAGS = -std=c11 -Wall -Wextra -Werror -Iinclude
 SRC_DIR = src
 BUILD_DIR = build
 
-SRC = $(SRC_DIR)/main.c # Add more as we go.
+SRC = $(SRC_DIR)/main.c $(SRC_DIR)/vectrum.c # Add more as we go.
 OBJS = $(SRC:.c=.o)
 TARGET = $(BUILD_DIR)/mr_demo
 

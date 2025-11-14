@@ -42,7 +42,7 @@ As I'm still learning, these should help keep me focused on what matters for sol
 
 - Use a `.h` and `.c` file per module:
   - `.h` files: What other code is allowed to use.
-  - `.c` files: The actual impleemntation.
+  - `.c` files: The actual implementation.
   - Purpose: keep things clean and prevent name collision.
 - Document ownership clearly:
   - As C doesn't manage memory for me, I need to document:
@@ -57,7 +57,7 @@ As I'm still learning, these should help keep me focused on what matters for sol
   vector_free(&vec);
   ```
 
-  - This avoid uninitizlized memory bugs and keeps things consistent.
+  - This avoids uninitialized memory bugs and keeps things consistent.
 - Don't expose internal struct details unless there are no other options:
   - If I expose internal fields, it's easy to break invariants when users modify them incorrectly.
 - Keep helper functions private:
