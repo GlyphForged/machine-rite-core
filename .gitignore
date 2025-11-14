@@ -9,6 +9,7 @@
 # Editor / OS files
 .DS_Store
 Thumbs.db
+
 # CMake / Make / Ninja (if used later)
 CMakeFiles/
 CMakeCache.txt
@@ -26,3 +27,6 @@ Makefile
 # Logs
 *.log
 
+# clangd stuff
+/.cache/
+compile_commands.json
