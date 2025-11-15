@@ -67,20 +67,21 @@ As I'm still learning, these should help keep me focused on what matters for sol
 
 I've got a rough roadmap for what I'd like to implement. This will store resources I found and the general gameplan I've devised while researching C.
 This may change over time as I learn about the language, but these seem to be some of the most common footguns and concepts folks stumble over.
+As I build these, I plan to write "wrappers" that are more heavily Adeptus Mechanicus themed to show off the functionality in a practical/functional but fun way.
+TL;DR: I'mma make a TUI servoskull. Because I want to.
 
 ### Tier 1 - Fundamentals
 
-#### 1. Dynamic Vector
+#### 1. "Vectrum", Yet Another Dynamic Array Solution
 
 - A growable array, similar to `std::vector` in C++ or `Vec` in Rust:
   - Should resize dynamically
   - Push/Pop, Insert/Remove, Clear functionality
   - Handle allocation failures gracefully
 - Resources:
-  - [Dynamic Arrays in C](https://www.youtube.com/watch?v=lXvPgEaOKXA)
-  - [Creating a Dynamic Array in C: A Step-by-Step Guide](https://www.youtube.com/watch?v=Nn_hbAGnBOs)
-  - [Implementing a vector-like data structure in C](https://www.youtube.com/watch?v=bQvxQbUzZZM)
   - [GeeksForGeeks - Dynamic Array in C](https://www.geeksforgeeks.org/c/dynamic-array-in-c/)
+- Notes:
+  - "Vectrum" was chosen as something vaguely Adeptus Mechanicus while still reading close to "Vector", a common term for dynamic arrays.
 
 #### 2. String Builder
 

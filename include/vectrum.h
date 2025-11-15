@@ -1,8 +1,5 @@
 #pragma once
 #include <stddef.h>
-#include <stdint.h> // SIZE_MAX
-#include <stdlib.h>
-#include <string.h>
 
 /* Vectrum - generic dynamic array of values.
  *
@@ -18,6 +15,10 @@
  *  - After v_destroy(), the Vectrum is zeroed and may be re-initialized.
  *  - Behavior is undefined if any function is called on an uninitialized
  *    or non-destroyed-but-reinitialized Vectrum.
+ *
+ * Callers should treat Vectrum fields as read-only after v-init().
+ * Modifying them directly can break invariants and result in UB.
+ * Calling functions on an uninitialized Vectrum is UB.
  */
 typedef struct {
     size_t length;   // Number of valid elements
@@ -29,17 +30,17 @@ typedef struct {
 // Error codes returned by Vectrum operations
 enum {
     VECTRUM_OK = 0,
-    VECTRUM_ERR_OOM,         // Out of memory / allocation failure
-    VECTRUM_ERR_OVERFLOW,    // Capacity * elemSize overflow
-    VECTRUM_ERR_SIZE_INVALID // Element Size Invalid
+    VECTRUM_ERR_OOM,          // Out of memory / allocation failure
+    VECTRUM_ERR_OVERFLOW,     // Capacity * elemSize overflow
+    VECTRUM_ERR_SIZE_INVALID, // Element Size Invalid
+    VECTRUM_ERR_REF_INVALID,  // Vectrum Ref == NULL
 };
 
 /* Initialize a Vectrum.
  *
  * Preconditions:
- *  - vRef != NULL
  *  - elem_size > 0
- *  - capacity * elemSize does not overfow size_t
+ *  - capacity * elemSize does not overflow size_t
  *  - vRef is either uninitialized or previously destroyed
  *
  * Postconditions on success:
@@ -47,7 +48,7 @@ enum {
  *  - vRef->capacity == capacity
  *  - vRef->elemSize == elemSize
  *  - if capacity == 0: vRef->data == NULL
- *  - if capacity > 0: vRef->data poitns to capacity * elemSize bytes
+ *  - if capacity > 0: vRef->data points to capacity * elemSize bytes
  *
  * On failure:
  *  - vRef is zeroed (length = capacity = elemSize = 0, data = NULL)
@@ -58,7 +59,6 @@ int v_init(Vectrum *vRef, size_t capacity, size_t elemSize);
 /* Destroy a Vectrum and free its backing buffer (if any).
  *
  * Preconditions:
- *  - vRef != NULL
  *  - vRef is either:
  *    - initialized
  *    - zeroed by v_destroy() or a failing v_init().
@@ -69,9 +69,12 @@ int v_init(Vectrum *vRef, size_t capacity, size_t elemSize);
  *  - vRef->elemSize == 0
  *  - vRef->data == NULL
  *
+ * On failure:
+ *  - a non-zero error code is returned
+ *
  * Behavior is undefined if called on an uninitialized  object or non-Vectrum
  */
-void v_destroy(Vectrum *vRef);
+int v_destroy(Vectrum *vRef);
 
 /* Push one element into the Vectrum.
  *
@@ -84,7 +87,7 @@ void v_destroy(Vectrum *vRef);
  *    the logical element type. If not, behavior is undefined.
  *
  * Postconditions on success:
- *  - let old_legnth = vRef->length on entry
+ *  - let old_length = vRef->length on entry
  *  - let old_capacity = vRef->capacity on entry
  *  - vRef->length == old_length + 1
  *  - vRef->capacity >= vRef->length

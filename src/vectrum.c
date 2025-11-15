@@ -1,50 +1,55 @@
 #include "vectrum.h"
+#include <stdint.h> // SIZE_MAX
+#include <stdlib.h> // malloc, realloc, free
+#include <string.h> // memcpy
+
+static void zero_vectrum(Vectrum *vRef);
 
 int v_init(Vectrum *vRef, size_t capacity, size_t elemSize) {
-    if (elemSize == 0 || capacity > SIZE_MAX / elemSize) {
-        vRef->length = 0;
-        vRef->capacity = 0;
-        vRef->elemSize = 0;
-        vRef->data = NULL;
-
-        int err = (elemSize == 0) ? VECTRUM_ERR_SIZE_INVALID : VECTRUM_ERR_OVERFLOW;
-        return err;
+    if (vRef == NULL) {
+        return VECTRUM_ERR_REF_INVALID;
     }
+
+    zero_vectrum(vRef);
+
+    if (elemSize == 0) {
+        return VECTRUM_ERR_SIZE_INVALID;
+    }
+    if (capacity > SIZE_MAX / elemSize) {
+        return VECTRUM_ERR_OVERFLOW;
+    }
+
+    vRef->elemSize = elemSize;
+
     if (capacity == 0) {
-        vRef->length = 0;
-        vRef->capacity = 0;
-        vRef->elemSize = elemSize;
-        vRef->data = NULL;
         return VECTRUM_OK;
     }
 
     void *buffer = malloc(capacity * elemSize);
-
     if (buffer == NULL) {
-        vRef->length = 0;
-        vRef->capacity = 0;
-        vRef->elemSize = 0;
-        vRef->data = NULL;
         return VECTRUM_ERR_OOM;
     }
-    vRef->length = 0;
+
     vRef->capacity = capacity;
-    vRef->elemSize = elemSize;
     vRef->data = buffer;
     return VECTRUM_OK;
 }
 
-void v_destroy(Vectrum *vRef) {
+int v_destroy(Vectrum *vRef) {
+    if (vRef == NULL) {
+        return VECTRUM_ERR_REF_INVALID;
+    }
     if (vRef->data != NULL) {
         free(vRef->data);
     }
-    vRef->length = 0;
-    vRef->capacity = 0;
-    vRef->elemSize = 0;
-    vRef->data = NULL;
+    zero_vectrum(vRef);
+    return VECTRUM_OK;
 }
 
 int v_push(Vectrum *vRef, const void *element) {
+    if (vRef == NULL || element == NULL) {
+        return VECTRUM_ERR_REF_INVALID;
+    }
     if (vRef->length == vRef->capacity) {
         size_t newCap;
         if (vRef->capacity == 0) {
@@ -71,4 +76,11 @@ int v_push(Vectrum *vRef, const void *element) {
     memcpy(dest, element, vRef->elemSize);
     vRef->length++;
     return VECTRUM_OK;
+}
+
+static void zero_vectrum(Vectrum *vRef) {
+    vRef->length = 0;
+    vRef->capacity = 0;
+    vRef->elemSize = 0;
+    vRef->data = NULL;
 }
