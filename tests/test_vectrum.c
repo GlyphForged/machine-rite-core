@@ -1,5 +1,6 @@
 // Test Pattern:
 //  Arrange, Act, Assert
+#include "test_common.h"
 #include "vectrum.h"
 #include <assert.h>
 
@@ -114,8 +115,8 @@ static void test_reinit(void) {
 }
 
 void run_vectrum_tests(void) {
-    test_init();
-    test_zero_capacity();
-    test_init_failure();
-    test_reinit();
+    RUN_TEST(test_init);
+    RUN_TEST(test_zero_capacity);
+    RUN_TEST(test_init_failure);
+    RUN_TEST(test_reinit);
 }
