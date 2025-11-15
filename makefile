@@ -43,6 +43,9 @@ tests: $(TEST_TARGET)
 test: tests
 	./$(TEST_TARGET)
 
+run:
+	./$(TARGET)
+
 clean:
 	rm -rf $(BUILD_DIR) $(SRC_DIR)/*.o $(TEST_DIR)/*.o
 

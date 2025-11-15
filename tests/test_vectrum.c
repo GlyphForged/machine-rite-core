@@ -3,24 +3,17 @@
 #include "test_common.h"
 #include "vectrum.h"
 #include <assert.h>
+#include <stdint.h>
+
+// Helper signatures
+static void destroy_vectrum(Vectrum *vec);
+static void init_int_vectrum(Vectrum *vec, size_t capacity);
+static void push_int(Vectrum *vec, int value);
 
 static void test_init(void) {
     Vectrum vec;
-
-    int init = v_init(&vec, 10, sizeof(int)); // NOLINT
-
-    assert(init == VECTRUM_OK);
-    assert(vec.length == 0);
-    assert(vec.capacity == 10);
-    assert(vec.elemSize == sizeof(int));
-    assert(vec.data != NULL);
-
-    int dest = v_destroy(&vec);
-    assert(dest == VECTRUM_OK);
-    assert(vec.length == 0);
-    assert(vec.capacity == 0);
-    assert(vec.elemSize == 0);
-    assert(vec.data == NULL);
+    init_int_vectrum(&vec, 10); // NOLINT
+    destroy_vectrum(&vec);
 }
 
 // TODO:
@@ -31,49 +24,51 @@ static void test_zero_capacity(void) {
     const int ANSWER = 42;
     const int NICE = 69;
 
-    int init = v_init(&vec, 0, sizeof(int));
+    init_int_vectrum(&vec, 0); // NOLINT
 
-    assert(init == VECTRUM_OK);
-    assert(vec.length == 0);
-    assert(vec.capacity == 0);
-    assert(vec.elemSize == sizeof(int));
-    assert(vec.data == NULL);
-
-    int push0 = v_push(&vec, &ANSWER);
-    assert(push0 == VECTRUM_OK);
+    push_int(&vec, ANSWER);
     assert(vec.length == 1);
     assert(vec.capacity == 2);
     assert(vec.elemSize == sizeof(int));
     assert(vec.data != NULL);
 
-    int push1 = v_push(&vec, &NICE);
-    int push2 = v_push(&vec, &ANSWER);
+    push_int(&vec, NICE);
+    push_int(&vec, ANSWER);
     int *data = (int *)vec.data;
-    assert(push1 == VECTRUM_OK);
-    assert(push2 == VECTRUM_OK);
     assert(data[0] == ANSWER);
     assert(data[1] == NICE);
+    assert(data[2] == ANSWER);
     assert(vec.length == 3);
     assert(vec.capacity == 4);
     assert(vec.data != NULL);
 
-    int dest = v_destroy(&vec);
-    assert(dest == VECTRUM_OK);
+    destroy_vectrum(&vec);
 }
 
-/*
- TODO:
-    - Failure Path
-        - Call v_init with elemSize == 0;
-            - Result should be VECTRUM_ERR_SIZE_INVALID
-            - Struct should be in a "safe" state.
-        - Call v_init with values that trigger overflow.
-            - i.e. capacity == MAX_SIZE and elemSize == 2
-            - Expect VECTRUM_ERR_OVERFLOW
-            - Expect safe state again
-*/
-static void test_init_failure(void) {
-    // WIP
+static void test_size_fail(void) {
+    Vectrum vec;
+
+    int res = v_init(&vec, 0, 0);
+    assert(res == VECTRUM_ERR_SIZE_INVALID);
+    assert(vec.length == 0);
+    assert(vec.capacity == 0);
+    assert(vec.elemSize == 0);
+    assert(vec.data == NULL);
+
+    destroy_vectrum(&vec);
+}
+
+static void test_overflow_fail(void) {
+    Vectrum vec;
+
+    int res = v_init(&vec, 2, SIZE_MAX);
+    assert(res == VECTRUM_ERR_OVERFLOW);
+    assert(vec.length == 0);
+    assert(vec.capacity == 0);
+    assert(vec.elemSize == 0);
+    assert(vec.data == NULL);
+
+    destroy_vectrum(&vec);
 }
 
 static void test_reinit(void) {
@@ -81,42 +76,63 @@ static void test_reinit(void) {
     const int ANSWER = 42;
     const int NICE = 69;
 
-    int init0 = v_init(&vec, 10, sizeof(int)); // NOLINT
-    int push0 = v_push(&vec, &ANSWER);
+    init_int_vectrum(&vec, 10); // NOLINT
+    push_int(&vec, ANSWER);
     int *data0 = (int *)vec.data;
-    assert(init0 == VECTRUM_OK);
-    assert(push0 == VECTRUM_OK);
     assert(data0[0] == ANSWER);
     assert(vec.length == 1);
     assert(vec.capacity == 10);
     assert(vec.elemSize == sizeof(int));
     assert(vec.data != NULL);
 
-    int dest0 = v_destroy(&vec);
-    assert(dest0 == VECTRUM_OK);
-    assert(vec.length == 0);
-    assert(vec.capacity == 0);
-    assert(vec.elemSize == 0);
-    assert(vec.data == NULL);
+    destroy_vectrum(&vec);
 
-    int init1 = v_init(&vec, 5, sizeof(int)); // NOLINT
-    int push1 = v_push(&vec, &NICE);
+    init_int_vectrum(&vec, 5); // NOLINT
+    push_int(&vec, NICE);
     int *data1 = (int *)vec.data;
-    assert(init1 == VECTRUM_OK);
-    assert(push1 == VECTRUM_OK);
     assert(data1[0] == NICE);
     assert(vec.length == 1);
     assert(vec.capacity == 5);
     assert(vec.elemSize == sizeof(int));
     assert(vec.data != NULL);
 
-    int dest1 = v_destroy(&vec);
-    assert(dest1 == VECTRUM_OK);
+    destroy_vectrum(&vec);
+}
+
+// Vectrum init helper
+static void init_int_vectrum(Vectrum *vec, size_t capacity) {
+    int res = v_init(vec, capacity, sizeof(int));
+    assert(res == VECTRUM_OK);
+    assert(vec->length == 0);
+    assert(vec->capacity == capacity);
+    assert(vec->elemSize == sizeof(int));
+    if (capacity == 0) {
+        assert(vec->data == NULL);
+    } else {
+        assert(vec->data != NULL);
+    }
+}
+
+// Vectrum destruction helper
+static void destroy_vectrum(Vectrum *vec) {
+    int res = v_destroy(vec);
+    assert(res == VECTRUM_OK);
+    assert(vec->length == 0);
+    assert(vec->capacity == 0);
+    assert(vec->elemSize == 0);
+    assert(vec->data == NULL);
+}
+
+// Vectrum push helper
+static void push_int(Vectrum *vec, int value) {
+    int res = v_push(vec, &value);
+    assert(res == VECTRUM_OK);
 }
 
 void run_vectrum_tests(void) {
     RUN_TEST(test_init);
     RUN_TEST(test_zero_capacity);
-    RUN_TEST(test_init_failure);
     RUN_TEST(test_reinit);
+    RUN_TEST(test_size_fail);
+    RUN_TEST(test_overflow_fail);
 }
