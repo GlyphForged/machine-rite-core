@@ -10,21 +10,23 @@ static void destroy_vectrum(Vectrum *vec);
 static void init_int_vectrum(Vectrum *vec, size_t capacity);
 static void push_int(Vectrum *vec, int value);
 
+// Constants used for testing
+const int ANSWER = 42;
+const int NICE = 69;
+
+
 static void test_init(void) {
     Vectrum vec;
     init_int_vectrum(&vec, 10); // NOLINT
     destroy_vectrum(&vec);
 }
 
-// TODO:
-// - `pop()` on zero cap should return an error and no-op.
-//   > pop test should run before push test when built
 static void test_zero_capacity(void) {
     Vectrum vec;
-    const int ANSWER = 42;
-    const int NICE = 69;
 
     init_int_vectrum(&vec, 0); // NOLINT
+
+    assert(v_pop(&vec) == VECTRUM_ERR_SIZE_ZERO);
 
     push_int(&vec, ANSWER);
     assert(vec.length == 1);
@@ -73,8 +75,6 @@ static void test_overflow_fail(void) {
 
 static void test_reinit(void) {
     Vectrum vec;
-    const int ANSWER = 42;
-    const int NICE = 69;
 
     init_int_vectrum(&vec, 10); // NOLINT
     push_int(&vec, ANSWER);
@@ -98,6 +98,30 @@ static void test_reinit(void) {
 
     destroy_vectrum(&vec);
 }
+
+static void test_pop(void) {
+    Vectrum vec;
+
+    init_int_vectrum(&vec, 2);
+    push_int(&vec, NICE);
+    push_int(&vec, ANSWER);
+    assert(vec.length == 2);
+
+    v_pop(&vec);
+    assert(vec.length == 1);
+    int *data = (int *)vec.data;
+    assert(data[0] == NICE);
+
+    destroy_vectrum(&vec);
+}
+
+// TODO:
+// - Write tests for v_peek
+//  - Successful peek
+//  - Out of bounds
+//  - null args
+//  - Type-generic sanity
+//    - (make sure that structs ans such are properly handled)
 
 // Vectrum init helper
 static void init_int_vectrum(Vectrum *vec, size_t capacity) {
@@ -135,4 +159,5 @@ void run_vectrum_tests(void) {
     RUN_TEST(test_reinit);
     RUN_TEST(test_size_fail);
     RUN_TEST(test_overflow_fail);
+    RUN_TEST(test_pop);
 }

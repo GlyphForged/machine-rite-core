@@ -33,7 +33,9 @@ enum {
     VECTRUM_ERR_OOM,          // Out of memory / allocation failure
     VECTRUM_ERR_OVERFLOW,     // Capacity * elemSize overflow
     VECTRUM_ERR_SIZE_INVALID, // Element Size Invalid
-    VECTRUM_ERR_REF_INVALID,  // Vectrum Ref == NULL
+    VECTRUM_ERR_ARG_INVALID,  // Argument provided is invalid
+    VECTRUM_ERR_SIZE_ZERO,    // Tried to pop a 0-size vectrum
+    VECTRUM_ERR_BOUNDS,       // Attempted to access out of bounds
 };
 
 /* Initialize a Vectrum.
@@ -76,7 +78,7 @@ int v_init(Vectrum *vRef, size_t capacity, size_t elemSize);
  */
 int v_destroy(Vectrum *vRef);
 
-/* Push one element into the Vectrum.
+/* Push one element into the back of the Vectrum.
  *
  * The element is copied by value into the backing buffer.
  *
@@ -101,3 +103,43 @@ int v_destroy(Vectrum *vRef);
  *  - a non-zero error code is returned
  */
 int v_push(Vectrum *vRef, const void *element);
+
+/* Pop the last element off of the Vectrum.
+ *
+ * The element is not destroyed, but rather, the length is simply reduced by one.
+ * This should mean that pushing a new element simply overwrites the value
+ * 
+ * Preconditions:
+ * - vRef != NULL
+ * - vRef is initialized (NOT destroyed/zeroed)
+ * - vRef length > 0
+ *
+ * Postconditions on success:
+ * - let old_length = vRef->length on entry
+ * - let new_length = old_length - 1
+ * - elements at indices [0, new_length) are unchanged
+ *
+ * On failure (No elements in vectrum):
+ * - vRef is unchanged
+ * - a non-zero error code is returned
+ */
+int v_pop(Vectrum *vRef);
+
+/* Return the value of an element.
+ *
+ * Preconditions:
+ * - vRef != NULL
+ * - vRef is initialized (NOT destroyed/zeroed)
+ * - vRef length > 0
+ * - index < vRef.length
+ *
+ * Postconditions on success:
+ * - vRef is unchanged
+ * - outElement == vRef.data at the provided index
+ *
+ * On failure (No elements or out of range):
+ * - vRef is unchanged
+ * - a non-zero error code is returned
+ * - outElement == NULL
+ */
+int v_peek(const Vectrum *vRef, size_t index, void *outElement);

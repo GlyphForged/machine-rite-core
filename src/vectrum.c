@@ -7,7 +7,7 @@ static void zero_vectrum(Vectrum *vRef);
 
 int v_init(Vectrum *vRef, size_t capacity, size_t elemSize) {
     if (vRef == NULL) {
-        return VECTRUM_ERR_REF_INVALID;
+        return VECTRUM_ERR_ARG_INVALID;
     }
 
     zero_vectrum(vRef);
@@ -24,7 +24,7 @@ int v_init(Vectrum *vRef, size_t capacity, size_t elemSize) {
     if (capacity == 0) {
         return VECTRUM_OK;
     }
-
+ 
     void *buffer = malloc(capacity * elemSize);
     if (buffer == NULL) {
         return VECTRUM_ERR_OOM;
@@ -37,7 +37,7 @@ int v_init(Vectrum *vRef, size_t capacity, size_t elemSize) {
 
 int v_destroy(Vectrum *vRef) {
     if (vRef == NULL) {
-        return VECTRUM_ERR_REF_INVALID;
+        return VECTRUM_ERR_ARG_INVALID;
     }
     if (vRef->data != NULL) {
         free(vRef->data);
@@ -48,7 +48,7 @@ int v_destroy(Vectrum *vRef) {
 
 int v_push(Vectrum *vRef, const void *element) {
     if (vRef == NULL || element == NULL) {
-        return VECTRUM_ERR_REF_INVALID;
+        return VECTRUM_ERR_ARG_INVALID;
     }
     if (vRef->length == vRef->capacity) {
         size_t newCap;
@@ -76,6 +76,45 @@ int v_push(Vectrum *vRef, const void *element) {
     memcpy(dest, element, vRef->elemSize);
     vRef->length++;
     return VECTRUM_OK;
+}
+
+int v_pop(Vectrum *vRef) {
+  if (vRef == NULL) {
+    return VECTRUM_ERR_ARG_INVALID;
+  }
+
+  if (vRef->length == 0) {
+    return VECTRUM_ERR_SIZE_ZERO;
+  }
+
+  vRef->length = vRef->length - 1;
+  return VECTRUM_OK;
+}
+
+// TODO: Draw the rest of the fucking owl.
+int v_peek(const Vectrum *vRef, size_t index, void *outElement) {
+  if (vRef == NULL || outElement == NULL) {
+    outElement = NULL;
+    return VECTRUM_ERR_ARG_INVALID;
+  }
+
+  if (vRef->length == 0) {
+    outElement = NULL;
+    return VECTRUM_ERR_SIZE_ZERO;
+  }
+
+  if (vRef->length > index) {
+    outElement = NULL;
+    return VECTRUM_ERR_BOUNDS;
+  }
+
+  //Compute source pointer
+  unsigned char *base = (unsigned char *)vRef->data;
+  unsigned char *data = base + (index * vRef->elemSize);
+
+  //Copy the bytes to the passed outElement
+  memcpy(outElement, data, vRef->elemSize);
+  return VECTRUM_OK;
 }
 
 static void zero_vectrum(Vectrum *vRef) {
