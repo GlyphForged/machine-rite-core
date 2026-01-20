@@ -50,3 +50,6 @@ clean:
 	rm -rf $(BUILD_DIR) $(SRC_DIR)/*.o $(TEST_DIR)/*.o
 
 .PHONY: all clean test tests
+
+list:
+	@echo -e "run\ntests\ntest\nrun\nclean"
