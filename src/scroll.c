@@ -1,8 +1,8 @@
-#include "vectrum.h"
+#include "scroll.h"
 #include <stdint.h>
 #include <stdlib.h>
 
-int mrc_scroll_init(Scroll *scroll, size_t capacity, size_t u_size)
+int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
 {
   // Check for immediate fail states
   if (scroll == NULL) return SCROLL_ERR_ARG_INVALID;
@@ -16,10 +16,10 @@ int mrc_scroll_init(Scroll *scroll, size_t capacity, size_t u_size)
   scroll -> unit_size = 0;
 
   // Set the settings
-  scroll -> span = capacity;
+  scroll -> limit = capacity;
   scroll -> unit_size = u_size;
   void* buffer = malloc(capacity * u_size);
-  if (buffer == NULL) return VECTRUM_ERR_OOM;
+  if (buffer == NULL) return SCROLL_ERR_OOM;
   scroll -> data = buffer;
   return SCROLL_OK;
 }
