@@ -20,13 +20,12 @@ MRC_ScrollStatus mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_s
 
   // Configure the scroll
   if (capacity < 2) {
-    scroll -> limit = 2;
-      } else {
-    scroll -> limit = capacity;
+    capacity = 2;
   }
-  scroll -> unit_size = u_size;
   void *buffer = malloc(capacity * u_size);
   if (buffer == NULL) return SCROLL_ERR_OOM;
+  scroll -> limit = capacity;
+  scroll -> unit_size = u_size;
   scroll -> data = buffer;
   return SCROLL_OK;
 }
