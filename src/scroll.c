@@ -12,14 +12,17 @@ int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
 {
   // Check for immediate fail states
   if (scroll == NULL) return SCROLL_ERR_ARG_INVALID;
-  if (capacity < 1) return SCROLL_ERR_SIZE_INVALID;
   if (capacity > SIZE_MAX / u_size) return SCROLL_ERR_OVERFLOW;
   
   // Ensure clean starting point.
   wipe_scroll(scroll);
 
-  // COnfigure the scroll
-  scroll -> limit = capacity;
+  // Configure the scroll
+  if (capacity < 2) {
+    scroll -> limit = 2;
+      } else {
+    scroll -> limit = capacity;
+  }
   scroll -> unit_size = u_size;
   void *buffer = malloc(capacity * u_size);
   if (buffer == NULL) return SCROLL_ERR_OOM;
