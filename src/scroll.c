@@ -8,7 +8,7 @@ static void wipe_scroll(MRC_Scroll *scroll)
   scroll -> unit_size = 0;
 }
 
-int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
+MRC_SCrollStatus mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
 {
   // Check for immediate fail states
   if (scroll == NULL) return SCROLL_ERR_ARG_INVALID;
@@ -31,7 +31,7 @@ int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
   return SCROLL_OK;
 }
 
-int mrc_scroll_purge(MRC_Scroll *scroll)
+MRC_ScrollStatus mrc_scroll_purge(MRC_Scroll *scroll)
 {
   if (scroll == NULL) return SCROLL_ERR_ARG_INVALID;
   free(scroll -> data);
