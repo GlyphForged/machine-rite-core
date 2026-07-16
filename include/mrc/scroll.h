@@ -22,15 +22,25 @@ enum {
 };
 
 /**
- * @brief Initializes a scroll.
+ * @brief Initializes a an uninitialized scroll
+ *
+ * @pre pointer must be an uninitialized MRC_Scroll
+ *
  * @param[in] scroll The address of an unitialized scroll created by the user
- * @param[in] capacity The starting capacity of the scroll
- * @param[in] unit_size The 'width' of a unit of data
- * @usage MRC_Scroll* myscroll = mrc_scroll_init(10, sizeof(myStruct))
+ * @param[in] capacity The starting capacity of the scroll will default to 2 if one is not provided or if the value provided is <2.
+ * @param[in] unit_size The 'width' of the data being stored.
+ *
+ * @return An int indicating success/failure. (0 = success, else failure code)
  */
 int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t unit_size);
 
 /**
- * @brief Delete a scroll
+ * @brief Delete a scroll, freeing its backing buffer.
+ *
+ * @pre pointer must be to an initialized MRC_Scroll
+ *
+ * @param[in] scroll The address of the scroll to be deleted.
+ *
+ * @return An int indicating success/failure. (0 = success, else failure code)
  */
 int mrc_scroll_purge(MRC_Scroll *scroll);

@@ -26,5 +26,8 @@ int mrc_scroll_purge(MRC_Scroll *scroll)
 {
   if (scroll == NULL) return SCROLL_ERR_ARG_INVALID;
   free(scroll -> data);
+  scroll -> span = NULL;
+  scroll -> limit = NULL;
+  scroll -> unit_size = NULL;
   return SCROLL_OK;
 }
