@@ -30,3 +30,6 @@ Makefile
 # clangd stuff
 /.cache/
 compile_commands.json
+
+# Doxygen shit
+docs/
