@@ -1,8 +1,11 @@
+#include <stdint.h>
+#include <stdlib.h>
+
 /**
  * @brief A Scroll struct
  */
 typedef struct{
-  void* data;         // Address of the data backing buffer
+  void *data;         // Address of the data backing buffer
   size_t span;        // Current length of the data
   size_t limit;       // Maximum length of the current buffer
   size_t unit_size;   // Size of each unit of data
@@ -10,8 +13,8 @@ typedef struct{
 
 enum {
   SCROLL_OK = 0,
-  SCROL_ERR_OOM,
-  SCROLL_ERR_OVERLFOW,
+  SCROLL_ERR_OOM,
+  SCROLL_ERR_OVERFLOW,
   SCROLL_ERR_SIZE_INVALID,
   SCROLL_ERR_ARG_INVALID,
   SCROLL_ERR_SIZE_ZERO,
@@ -25,4 +28,9 @@ enum {
  * @param[in] unit_size The 'width' of a unit of data
  * @usage MRC_Scroll* myscroll = mrc_scroll_init(10, sizeof(myStruct))
  */
-int mrc_scroll_init(Scroll *scroll, size_t capacity, size_t unit_size);
+int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t unit_size);
+
+/**
+ * @brief Delete a scroll
+ */
+int mrc_scroll_purge(MRC_Scroll *scroll);

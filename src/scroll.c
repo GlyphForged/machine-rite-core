@@ -1,6 +1,4 @@
-#include "scroll.h"
-#include <stdint.h>
-#include <stdlib.h>
+#include "../include/mrc/scroll.h"
 
 int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
 {
@@ -18,8 +16,15 @@ int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
   // Set the settings
   scroll -> limit = capacity;
   scroll -> unit_size = u_size;
-  void* buffer = malloc(capacity * u_size);
+  void *buffer = malloc(capacity * u_size);
   if (buffer == NULL) return SCROLL_ERR_OOM;
   scroll -> data = buffer;
+  return SCROLL_OK;
+}
+
+int mrc_scroll_purge(MRC_Scroll *scroll)
+{
+  if (scroll == NULL) return SCROLL_ERR_ARG_INVALID;
+  free(scroll -> data);
   return SCROLL_OK;
 }
