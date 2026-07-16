@@ -13,6 +13,7 @@ int mrc_scroll_init(MRC_Scroll *scroll, size_t capacity, size_t u_size)
   // Check for immediate fail states
   if (scroll == NULL) return SCROLL_ERR_ARG_INVALID;
   if (capacity > SIZE_MAX / u_size) return SCROLL_ERR_OVERFLOW;
+  if (u_size == 0) return SCROLL_ERR_SIZE_INVALID;
   
   // Ensure clean starting point.
   wipe_scroll(scroll);
