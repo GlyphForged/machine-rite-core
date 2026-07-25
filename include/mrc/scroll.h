@@ -61,6 +61,7 @@ MRC_ScrollStatus mrc_scroll_purge(MRC_Scroll *scroll);
  *
  * @pre scroll must point to an initialized MRC_Scroll struct
  * @pre data must point to a valid memory location of size scroll->unit_size
+ * @pre data must not point into scroll->data
  *
  * @param[in,out]   scroll    The address of the scroll to push data onto
  * @param[in]       data      The address of the data to be pushed onto the
@@ -107,6 +108,7 @@ MRC_ScrollStatus mrc_scroll_scan(MRC_Scroll *scroll, void *dest, size_t index);
  *
  * @pre scroll must point to an initialized MRC_Scroll struct
  * @pre data must point to a valid memory location of size scroll->unit_size
+ * @pre data must not point into scroll->data
  * @pre index must not be greater than span or less than zero
  *
  * @param[in,out]   scroll    The address of the scroll to push data onto
