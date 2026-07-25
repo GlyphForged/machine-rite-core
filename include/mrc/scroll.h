@@ -1,3 +1,4 @@
+#pragma once
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -98,7 +99,7 @@ MRC_ScrollStatus mrc_scroll_pop(MRC_Scroll *scroll, void *dest);
  *
  * @return 0 on success, or a non-zero SCROLL_ERR error code on failure
  */
-MRC_ScrollStatus mrc_scroll_scan(MRC_Scroll *scroll, void *dest, int index);
+MRC_ScrollStatus mrc_scroll_scan(MRC_Scroll *scroll, void *dest, size_t index);
 
 /**
  * @brief Inserts a new element into the the scroll at a given index, resizing
@@ -110,12 +111,12 @@ MRC_ScrollStatus mrc_scroll_scan(MRC_Scroll *scroll, void *dest, int index);
  *
  * @param[in,out]   scroll    The address of the scroll to push data onto
  * @param[in]       data      The address of the data to be inserted into the
- * scroll
+ *                           scroll
  * @param[in]       index     The index where data will be inserted
  *
  * @return 0 on success, or a non-zero SCROLL_ERR error code on failure
  */
-MRC_ScrollStatus mrc_scroll_insert(MRC_Scroll *scroll, void *data, int index);
+MRC_ScrollStatus mrc_scroll_insert(MRC_Scroll *scroll, void *data, size_t index);
 
 /**
  * @brief Provides a copy of data at a given location and removes it from the
@@ -128,7 +129,8 @@ MRC_ScrollStatus mrc_scroll_insert(MRC_Scroll *scroll, void *data, int index);
  *
  * @param[in]       scroll  The address of the scroll
  * @param[in, out]  dest    The address of a destination buffer
+ * @param[in]      index    The index to be removed
  *
  * @return 0 on success, or a non-zero SCROLL_ERR error code on failure
  */
-MRC_ScrollStatus mrc_scroll_remove(MRC_Scroll *scroll, void *dest);
+MRC_ScrollStatus mrc_scroll_remove(MRC_Scroll *scroll, void *dest, size_t index);

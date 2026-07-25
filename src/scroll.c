@@ -9,21 +9,24 @@ static void wipe_scroll(MRC_Scroll *scroll);
 
 MRC_ScrollStatus mrc_scroll_init(MRC_Scroll *scroll, size_t capacity,
                                  size_t u_size) {
-  // Check for immediate fail states
+  // validate scroll
   if (scroll == NULL)
     return SCROLL_ERR_ARG_INVALID;
+  // validate unit size
+  if (u_size == 0)
+    return SCROLL_ERR_SIZE_ZERO;
+  // normalize capacity
+  if (capacity < 2) {
+    capacity = 2;
+  }
+  // validate cap * u_size
   if (capacity > SIZE_MAX / u_size)
     return SCROLL_ERR_OVERFLOW;
-  if (u_size == 0)
-    return SCROLL_ERR_SIZE_INVALID;
 
   // Ensure clean starting point.
   wipe_scroll(scroll);
 
   // Configure the scroll
-  if (capacity < 2) {
-    capacity = 2;
-  }
   void *buffer = malloc(capacity * u_size);
   if (buffer == NULL)
     return SCROLL_ERR_OOM;
@@ -45,6 +48,8 @@ MRC_ScrollStatus mrc_scroll_push(MRC_Scroll *scroll, void *data) {
   if (scroll == NULL || data == NULL)
     return SCROLL_ERR_ARG_INVALID;
   if (scroll->span >= scroll->limit) {
+    if (scroll->limit > SIZE_MAX / 2)
+      return SCROLL_ERR_OVERFLOW;
     size_t new_limit = scroll->limit * 2;
     if (new_limit > SIZE_MAX / scroll->unit_size)
       return SCROLL_ERR_OVERFLOW;
@@ -56,7 +61,7 @@ MRC_ScrollStatus mrc_scroll_push(MRC_Scroll *scroll, void *data) {
   }
   char *dest = (char *)scroll->data + (scroll->span * scroll->unit_size);
   memcpy(dest, data, scroll->unit_size);
-  scroll->span++; // Don't forget to increment the span, pendejo
+  scroll->span++;
   return SCROLL_OK;
 }
 
@@ -65,28 +70,30 @@ MRC_ScrollStatus mrc_scroll_pop(MRC_Scroll *scroll, void *dest) {
     return SCROLL_ERR_ARG_INVALID;
   if (scroll->span < 1)
     return SCROLL_ERR_BOUNDS;
-  char *src = (char *)scroll->data + (scroll->span * scroll->unit_size);
+  char *src = (char *)scroll->data + ((scroll->span - 1) * scroll->unit_size);
   memcpy(dest, src, scroll->unit_size);
   scroll->span--;
   return SCROLL_OK;
 }
 
-MRC_ScrollStatus mrc_scroll_scan(MRC_Scroll *scroll, void *dest, int index) {
+MRC_ScrollStatus mrc_scroll_scan(MRC_Scroll *scroll, void *dest, size_t index) {
   if (scroll == NULL || dest == NULL)
     return SCROLL_ERR_ARG_INVALID;
-  if (index > scroll->limit || index > scroll->span || index < 0)
+  if (index >= scroll->span)
     return SCROLL_ERR_BOUNDS;
   char *src = (char *)scroll->data + (index * scroll->unit_size);
   memcpy(dest, src, scroll->unit_size);
   return SCROLL_OK;
 }
 
-MRC_ScrollStatus mrc_scroll_insert(MRC_Scroll *scroll, void *data, int index) {
+MRC_ScrollStatus mrc_scroll_insert(MRC_Scroll *scroll, void *data, size_t index) {
   if (scroll == NULL || data == NULL)
     return SCROLL_ERR_ARG_INVALID;
-  if (index > scroll->limit || index > scroll->span || index < 0)
+  if (index > scroll->span) // Allow for inserting into 'end' of aray
     return SCROLL_ERR_BOUNDS;
   if (scroll->span >= scroll->limit) {
+    if (scroll->limit > SIZE_MAX / 2)
+      return SCROLL_ERR_OVERFLOW;
     size_t new_limit = scroll->limit * 2;
     if (new_limit > SIZE_MAX / scroll->unit_size)
       return SCROLL_ERR_OVERFLOW;
@@ -96,16 +103,37 @@ MRC_ScrollStatus mrc_scroll_insert(MRC_Scroll *scroll, void *data, int index) {
     scroll->data = new_buffer;
     scroll->limit = new_limit;
   }
-  for (int i = index; i < scroll->span; i++) {
-    char *src = (char *)scroll->data + (i * scroll->unit_size);
-    char *dest = (char *)scroll->data + ((i + 1) * scroll->unit_size);
-    memcpy(dest, src, scroll->unit_size);
-  }
+
+  char *base = scroll->data;
+  memmove(
+    base + ((index + 1) * scroll->unit_size),
+    base + (index * scroll->unit_size),
+    (scroll->span - index) * scroll->unit_size
+  );
+
   char *scr_dest = (char *)scroll->data + (index * scroll->unit_size);
   memcpy(scr_dest, data, scroll->unit_size);
+  scroll->span++;
   return SCROLL_OK;
 }
 
+MRC_ScrollStatus mrc_scroll_remove(MRC_Scroll *scroll, void *dest, size_t index) {
+  if (scroll == NULL || dest == NULL)
+    return SCROLL_ERR_ARG_INVALID;
+  if (index >= scroll->span)
+    return SCROLL_ERR_BOUNDS;
+  char *scr_src = (char *)scroll->data + (index * scroll->unit_size);
+  memcpy(dest, scr_src, scroll->unit_size);
+  
+  char *base = scroll->data;
+  memmove(
+    base + (index * scroll->unit_size),
+    base + ((index + 1) * scroll->unit_size),
+    (scroll->span - index) * scroll->unit_size
+  );
+  scroll->span--;
+  return SCROLL_OK;
+}
 //=================================================================================================
 // STATIC METHODS
 //=================================================================================================

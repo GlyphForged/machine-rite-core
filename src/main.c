@@ -43,4 +43,11 @@ int main() {
   printf("Data at index %d was %d\n", 0, ins_res);
   test_scan = mrc_scroll_scan(&scroll, &ins_res, 1);
   printf("Data at index %d was %d\n", 1, ins_res);
+
+  int rem_res;
+  int test_remove = mrc_scroll_remove(&scroll, &rem_res, 0);
+  if (test_remove != SCROLL_OK) {
+    printf("Something went wrong. Error code: %d\n", test_remove);
+  }
+  printf("Data removed from scroll at index %d: %d\n", 0, rem_res);
 }
