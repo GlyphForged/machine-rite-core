@@ -126,11 +126,13 @@ MRC_ScrollStatus mrc_scroll_remove(MRC_Scroll *scroll, void *dest, size_t index)
   memcpy(dest, scr_src, scroll->unit_size);
   
   char *base = scroll->data;
-  memmove(
-    base + (index * scroll->unit_size),
-    base + ((index + 1) * scroll->unit_size),
-    (scroll->span - index - 1) * scroll->unit_size
-  );
+  if (scroll->span - index - 1 > 0) {
+    memmove(
+      base + (index * scroll->unit_size),
+      base + ((index + 1) * scroll->unit_size),
+      (scroll->span - index - 1) * scroll->unit_size
+    );
+  }
   scroll->span--;
   return SCROLL_OK;
 }
