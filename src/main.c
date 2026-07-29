@@ -39,6 +39,12 @@ int main() {
     printf("Data pushed to scroll: %d\n", push_int);
   }
 
+  push_int = 420;
+  test_push = mrc_scroll_push(&scroll, &push_int);
+  
+  push_int = 80085;
+  test_push = mrc_scroll_push(&scroll, &push_int);
+
   test_scan = mrc_scroll_scan(&scroll, &ins_res, 0);
   printf("Data at index %d was %d\n", 0, ins_res);
   test_scan = mrc_scroll_scan(&scroll, &ins_res, 1);
@@ -50,4 +56,14 @@ int main() {
     printf("Something went wrong. Error code: %d\n", test_remove);
   }
   printf("Data removed from scroll at index %d: %d\n", 0, rem_res);
+
+  for (size_t i = 0; i < scroll.span; i++) {
+    int scn, res;
+    res = mrc_scroll_scan(&scroll, &scn, i);
+    if (res == SCROLL_OK) {
+      printf("scroll[%d] = %d\n", (int)i, scn);
+    }
+  }
+  printf("scroll.span = %d\nscroll.limit = %d\nscroll.data = %p\n",
+         (int)scroll.span, (int)scroll.limit, scroll.data);
 }
